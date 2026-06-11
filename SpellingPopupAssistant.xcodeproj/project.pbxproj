@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A00100000000000000000001 /* SpellingPopupAssistantApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000001 /* SpellingPopupAssistantApp.swift */; };
+		A00100000000000000000002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000002 /* AppDelegate.swift */; };
+		A00100000000000000000003 /* WordCorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000003 /* WordCorrection.swift */; };
+		A00100000000000000000004 /* CorrectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000004 /* CorrectionResult.swift */; };
+		A00100000000000000000005 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000005 /* AppSettings.swift */; };
+		A00100000000000000000006 /* CorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000006 /* CorrectionEngine.swift */; };
+		A00100000000000000000007 /* MacOSSpellCheckerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000007 /* MacOSSpellCheckerEngine.swift */; };
+		A00100000000000000000008 /* OllamaCorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000008 /* OllamaCorrectionEngine.swift */; };
+		A00100000000000000000009 /* AccessibilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000009 /* AccessibilityManager.swift */; };
+		A0010000000000000000000A /* SelectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000A /* SelectionMonitor.swift */; };
+		A0010000000000000000000B /* TextReplacementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000B /* TextReplacementService.swift */; };
+		A0010000000000000000000C /* CorrectionPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000C /* CorrectionPopupController.swift */; };
+		A0010000000000000000000D /* PopupPositioningService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000D /* PopupPositioningService.swift */; };
+		A0010000000000000000000E /* ClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000E /* ClipboardService.swift */; };
+		A0010000000000000000000F /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000F /* Debouncer.swift */; };
+		A00100000000000000000010 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000010 /* Logger.swift */; };
+		A00100000000000000000018 /* GlobalHotKeyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001A /* GlobalHotKeyController.swift */; };
+		A00100000000000000000011 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000011 /* MenuBarController.swift */; };
+		A00100000000000000000012 /* CorrectionPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000012 /* CorrectionPopupView.swift */; };
+		A00100000000000000000013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000013 /* SettingsView.swift */; };
+		A00100000000000000000014 /* AccessibilityPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000014 /* AccessibilityPermissionView.swift */; };
+		A00100000000000000000015 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000015 /* Assets.xcassets */; };
+		A00100000000000000000016 /* MacOSSpellCheckerEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000016 /* MacOSSpellCheckerEngineTests.swift */; };
+		A00100000000000000000017 /* CorrectionResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000017 /* CorrectionResultTests.swift */; };
+		A00100000000000000000019 /* KeyboardShortcutSettingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001B /* KeyboardShortcutSettingTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A00300000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00900000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A00600000000000000000001;
+			remoteInfo = SpellingPopupAssistant;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A00200000000000000000001 /* SpellingPopupAssistantApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpellingPopupAssistantApp.swift; sourceTree = "<group>"; };
+		A00200000000000000000002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A00200000000000000000003 /* WordCorrection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCorrection.swift; sourceTree = "<group>"; };
+		A00200000000000000000004 /* CorrectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionResult.swift; sourceTree = "<group>"; };
+		A00200000000000000000005 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		A00200000000000000000006 /* CorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000007 /* MacOSSpellCheckerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSSpellCheckerEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000008 /* OllamaCorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaCorrectionEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000009 /* AccessibilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityManager.swift; sourceTree = "<group>"; };
+		A0020000000000000000000A /* SelectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionMonitor.swift; sourceTree = "<group>"; };
+		A0020000000000000000000B /* TextReplacementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReplacementService.swift; sourceTree = "<group>"; };
+		A0020000000000000000000C /* CorrectionPopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionPopupController.swift; sourceTree = "<group>"; };
+		A0020000000000000000000D /* PopupPositioningService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPositioningService.swift; sourceTree = "<group>"; };
+		A0020000000000000000000E /* ClipboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardService.swift; sourceTree = "<group>"; };
+		A0020000000000000000000F /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		A00200000000000000000010 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		A0020000000000000000001A /* GlobalHotKeyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotKeyController.swift; sourceTree = "<group>"; };
+		A00200000000000000000011 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		A00200000000000000000012 /* CorrectionPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionPopupView.swift; sourceTree = "<group>"; };
+		A00200000000000000000013 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A00200000000000000000014 /* AccessibilityPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityPermissionView.swift; sourceTree = "<group>"; };
+		A00200000000000000000015 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A00200000000000000000016 /* MacOSSpellCheckerEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSSpellCheckerEngineTests.swift; sourceTree = "<group>"; };
+		A00200000000000000000017 /* CorrectionResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionResultTests.swift; sourceTree = "<group>"; };
+		A0020000000000000000001B /* KeyboardShortcutSettingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutSettingTests.swift; sourceTree = "<group>"; };
+		A00200000000000000000018 /* SpellingPopupAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpellingPopupAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00200000000000000000019 /* SpellingPopupAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpellingPopupAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A00400000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A00400000000000000000002 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00500000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A00500000000000000000002 /* SpellingPopupAssistant */,
+				A00500000000000000000018 /* SpellingPopupAssistantTests */,
+				A00500000000000000000019 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A00500000000000000000002 /* SpellingPopupAssistant */ = {
+			isa = PBXGroup;
+			children = (
+				A00200000000000000000001 /* SpellingPopupAssistantApp.swift */,
+				A00200000000000000000002 /* AppDelegate.swift */,
+				A00500000000000000000003 /* Core */,
+				A0050000000000000000000F /* UI */,
+				A00200000000000000000015 /* Assets.xcassets */,
+			);
+			path = SpellingPopupAssistant;
+			sourceTree = "<group>";
+		};
+		A00500000000000000000003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A00500000000000000000004 /* Models */,
+				A00500000000000000000005 /* Engines */,
+				A00500000000000000000006 /* Accessibility */,
+				A00500000000000000000007 /* Popup */,
+				A00500000000000000000008 /* Utilities */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A00500000000000000000004 /* Models */ = {isa = PBXGroup; children = (A00200000000000000000003, A00200000000000000000004, A00200000000000000000005); path = Models; sourceTree = "<group>"; };
+		A00500000000000000000005 /* Engines */ = {isa = PBXGroup; children = (A00200000000000000000006, A00200000000000000000007, A00200000000000000000008); path = Engines; sourceTree = "<group>"; };
+		A00500000000000000000006 /* Accessibility */ = {isa = PBXGroup; children = (A00200000000000000000009, A0020000000000000000000A, A0020000000000000000000B); path = Accessibility; sourceTree = "<group>"; };
+		A00500000000000000000007 /* Popup */ = {isa = PBXGroup; children = (A0020000000000000000000C, A0020000000000000000000D); path = Popup; sourceTree = "<group>"; };
+		A00500000000000000000008 /* Utilities */ = {isa = PBXGroup; children = (A0020000000000000000000E, A0020000000000000000000F, A00200000000000000000010, A0020000000000000000001A); path = Utilities; sourceTree = "<group>"; };
+		A0050000000000000000000F /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A00500000000000000000010 /* MenuBar */,
+				A00500000000000000000011 /* Popup */,
+				A00500000000000000000012 /* Settings */,
+				A00500000000000000000013 /* Permission */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		A00500000000000000000010 /* MenuBar */ = {isa = PBXGroup; children = (A00200000000000000000011); path = MenuBar; sourceTree = "<group>"; };
+		A00500000000000000000011 /* Popup */ = {isa = PBXGroup; children = (A00200000000000000000012); path = Popup; sourceTree = "<group>"; };
+		A00500000000000000000012 /* Settings */ = {isa = PBXGroup; children = (A00200000000000000000013); path = Settings; sourceTree = "<group>"; };
+		A00500000000000000000013 /* Permission */ = {isa = PBXGroup; children = (A00200000000000000000014); path = Permission; sourceTree = "<group>"; };
+		A00500000000000000000018 /* SpellingPopupAssistantTests */ = {isa = PBXGroup; children = (A00200000000000000000016, A00200000000000000000017, A0020000000000000000001B); path = SpellingPopupAssistantTests; sourceTree = "<group>"; };
+		A00500000000000000000019 /* Products */ = {isa = PBXGroup; children = (A00200000000000000000018, A00200000000000000000019); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A00600000000000000000001 /* SpellingPopupAssistant */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A00A00000000000000000001 /* Build configuration list for PBXNativeTarget "SpellingPopupAssistant" */;
+			buildPhases = (A00700000000000000000001 /* Sources */, A00400000000000000000001 /* Frameworks */, A00800000000000000000001 /* Resources */);
+			buildRules = ();
+			dependencies = ();
+			name = SpellingPopupAssistant;
+			productName = SpellingPopupAssistant;
+			productReference = A00200000000000000000018 /* SpellingPopupAssistant.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A00600000000000000000002 /* SpellingPopupAssistantTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A00A00000000000000000002 /* Build configuration list for PBXNativeTarget "SpellingPopupAssistantTests" */;
+			buildPhases = (A00700000000000000000002 /* Sources */, A00400000000000000000002 /* Frameworks */, A00800000000000000000002 /* Resources */);
+			buildRules = ();
+			dependencies = (A00B00000000000000000001 /* PBXTargetDependency */);
+			name = SpellingPopupAssistantTests;
+			productName = SpellingPopupAssistantTests;
+			productReference = A00200000000000000000019 /* SpellingPopupAssistantTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00900000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A00600000000000000000001 = {CreatedOnToolsVersion = 16.0;};
+					A00600000000000000000002 = {CreatedOnToolsVersion = 16.0; TestTargetID = A00600000000000000000001;};
+				};
+			};
+			buildConfigurationList = A00A00000000000000000003 /* Build configuration list for PBXProject "SpellingPopupAssistant" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = A00500000000000000000001;
+			productRefGroup = A00500000000000000000019 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (A00600000000000000000001, A00600000000000000000002);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00800000000000000000001 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000015 /* Assets.xcassets in Resources */); runOnlyForDeploymentPostprocessing = 0; };
+		A00800000000000000000002 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00700000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00100000000000000000001, A00100000000000000000002, A00100000000000000000003, A00100000000000000000004,
+				A00100000000000000000005, A00100000000000000000006, A00100000000000000000007, A00100000000000000000008,
+				A00100000000000000000009, A0010000000000000000000A, A0010000000000000000000B, A0010000000000000000000C,
+				A0010000000000000000000D, A0010000000000000000000E, A0010000000000000000000F, A00100000000000000000010,
+				A00100000000000000000018,
+				A00100000000000000000011, A00100000000000000000012, A00100000000000000000013, A00100000000000000000014,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A00700000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A00100000000000000000016, A00100000000000000000017, A00100000000000000000019);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A00B00000000000000000001 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = A00600000000000000000001 /* SpellingPopupAssistant */; targetProxy = A00300000000000000000001 /* PBXContainerItemProxy */; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A00C00000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A00C00000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A00C00000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spelling Popup Assistant";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Spelling Popup Assistant uses Accessibility and paste events to replace selected text when requested.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.SpellingPopupAssistant;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A00C00000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spelling Popup Assistant";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Spelling Popup Assistant uses Accessibility and paste events to replace selected text when requested.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.SpellingPopupAssistant;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A00C00000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.SpellingPopupAssistantTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpellingPopupAssistant.app/Contents/MacOS/SpellingPopupAssistant";
+			};
+			name = Debug;
+		};
+		A00C00000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.SpellingPopupAssistantTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpellingPopupAssistant.app/Contents/MacOS/SpellingPopupAssistant";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A00A00000000000000000001 /* Build configuration list for PBXNativeTarget "SpellingPopupAssistant" */ = {isa = XCConfigurationList; buildConfigurations = (A00C00000000000000000003, A00C00000000000000000004); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00A00000000000000000002 /* Build configuration list for PBXNativeTarget "SpellingPopupAssistantTests" */ = {isa = XCConfigurationList; buildConfigurations = (A00C00000000000000000005, A00C00000000000000000006); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00A00000000000000000003 /* Build configuration list for PBXProject "SpellingPopupAssistant" */ = {isa = XCConfigurationList; buildConfigurations = (A00C00000000000000000001, A00C00000000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = A00900000000000000000001 /* Project object */;
+}
