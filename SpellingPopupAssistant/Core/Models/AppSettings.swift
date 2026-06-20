@@ -3,17 +3,20 @@ import AppKit
 import Carbon
 
 enum CorrectionMode: String, CaseIterable, Identifiable {
-    case localSpellChecker
-    case ollama
+    case embeddedLanguageTool
+    case languageToolGECToR
+    case gemini
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .localSpellChecker:
-            return "Local macOS Spell Checker"
-        case .ollama:
-            return "Local AI via Ollama"
+        case .embeddedLanguageTool:
+            return "Embedded LanguageTool"
+        case .languageToolGECToR:
+            return "LanguageTool + GECToR"
+        case .gemini:
+            return "Cloud AI via Gemini"
         }
     }
 }
@@ -116,12 +119,15 @@ final class AppSettings: ObservableObject {
         static let maxSelectedTextLength = "maxSelectedTextLength"
         static let showPopupForSingleWords = "showPopupForSingleWords"
         static let showPopupForSentences = "showPopupForSentences"
+        static let isAutoHideEnabled = "isAutoHideEnabled"
         static let autoHideTimeout = "autoHideTimeout"
-        static let ollamaEndpoint = "ollamaEndpoint"
-        static let ollamaModel = "ollamaModel"
-        static let grammarCheckerEnabled = "grammarCheckerEnabled"
+        static let gectorHelperEndpoint = "gectorHelperEndpoint"
+        static let gectorRequestTimeout = "gectorRequestTimeout"
+        static let geminiAPIKey = "geminiAPIKey"
+        static let geminiModel = "geminiModel"
         static let isManualShortcutEnabled = "isManualShortcutEnabled"
         static let checkSelectionShortcut = "checkSelectionShortcut"
+        static let didDefaultManualShortcutOn = "didDefaultManualShortcutOn"
     }
 
     @Published var isEnabled: Bool {
@@ -144,20 +150,28 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(showPopupForSentences, forKey: Keys.showPopupForSentences) }
     }
 
+    @Published var isAutoHideEnabled: Bool {
+        didSet { defaults.set(isAutoHideEnabled, forKey: Keys.isAutoHideEnabled) }
+    }
+
     @Published var autoHideTimeout: Double {
         didSet { defaults.set(autoHideTimeout, forKey: Keys.autoHideTimeout) }
     }
 
-    @Published var ollamaEndpoint: String {
-        didSet { defaults.set(ollamaEndpoint, forKey: Keys.ollamaEndpoint) }
+    @Published var gectorHelperEndpoint: String {
+        didSet { defaults.set(gectorHelperEndpoint, forKey: Keys.gectorHelperEndpoint) }
     }
 
-    @Published var ollamaModel: String {
-        didSet { defaults.set(ollamaModel, forKey: Keys.ollamaModel) }
+    @Published var gectorRequestTimeout: Double {
+        didSet { defaults.set(gectorRequestTimeout, forKey: Keys.gectorRequestTimeout) }
     }
 
-    @Published var grammarCheckerEnabled: Bool {
-        didSet { defaults.set(grammarCheckerEnabled, forKey: Keys.grammarCheckerEnabled) }
+    @Published var geminiAPIKey: String {
+        didSet { defaults.set(geminiAPIKey, forKey: Keys.geminiAPIKey) }
+    }
+
+    @Published var geminiModel: String {
+        didSet { defaults.set(geminiModel, forKey: Keys.geminiModel) }
     }
 
     @Published var isManualShortcutEnabled: Bool {
@@ -189,20 +203,29 @@ final class AppSettings: ObservableObject {
         if defaults.object(forKey: Keys.showPopupForSentences) == nil {
             defaults.set(true, forKey: Keys.showPopupForSentences)
         }
+        if defaults.object(forKey: Keys.isAutoHideEnabled) == nil {
+            defaults.set(true, forKey: Keys.isAutoHideEnabled)
+        }
         if defaults.object(forKey: Keys.autoHideTimeout) == nil {
             defaults.set(8.0, forKey: Keys.autoHideTimeout)
         }
-        if defaults.object(forKey: Keys.ollamaEndpoint) == nil {
-            defaults.set("http://localhost:11434", forKey: Keys.ollamaEndpoint)
+        if defaults.object(forKey: Keys.gectorHelperEndpoint) == nil {
+            defaults.set("http://127.0.0.1:8765/correct", forKey: Keys.gectorHelperEndpoint)
         }
-        if defaults.object(forKey: Keys.ollamaModel) == nil {
-            defaults.set("qwen2.5:7b", forKey: Keys.ollamaModel)
+        if defaults.object(forKey: Keys.gectorRequestTimeout) == nil {
+            defaults.set(3.0, forKey: Keys.gectorRequestTimeout)
         }
-        if defaults.object(forKey: Keys.grammarCheckerEnabled) == nil {
-            defaults.set(false, forKey: Keys.grammarCheckerEnabled)
+        if defaults.object(forKey: Keys.geminiAPIKey) == nil {
+            defaults.set("", forKey: Keys.geminiAPIKey)
         }
-        if defaults.object(forKey: Keys.isManualShortcutEnabled) == nil {
-            defaults.set(false, forKey: Keys.isManualShortcutEnabled)
+        if defaults.object(forKey: Keys.geminiModel) == nil {
+            defaults.set("gemini-3.1-flash-lite", forKey: Keys.geminiModel)
+        }
+        if defaults.object(forKey: Keys.didDefaultManualShortcutOn) == nil {
+            defaults.set(true, forKey: Keys.isManualShortcutEnabled)
+            defaults.set(true, forKey: Keys.didDefaultManualShortcutOn)
+        } else if defaults.object(forKey: Keys.isManualShortcutEnabled) == nil {
+            defaults.set(true, forKey: Keys.isManualShortcutEnabled)
         }
         if defaults.object(forKey: Keys.checkSelectionShortcut) == nil {
             if let data = try? JSONEncoder().encode(KeyboardShortcutSetting.default) {
@@ -211,14 +234,16 @@ final class AppSettings: ObservableObject {
         }
 
         isEnabled = defaults.bool(forKey: Keys.isEnabled)
-        correctionMode = CorrectionMode(rawValue: defaults.string(forKey: Keys.correctionMode) ?? "") ?? .localSpellChecker
+        correctionMode = Self.correctionMode(from: defaults.string(forKey: Keys.correctionMode))
         maxSelectedTextLength = defaults.integer(forKey: Keys.maxSelectedTextLength)
         showPopupForSingleWords = defaults.bool(forKey: Keys.showPopupForSingleWords)
         showPopupForSentences = defaults.bool(forKey: Keys.showPopupForSentences)
+        isAutoHideEnabled = defaults.bool(forKey: Keys.isAutoHideEnabled)
         autoHideTimeout = defaults.double(forKey: Keys.autoHideTimeout)
-        ollamaEndpoint = defaults.string(forKey: Keys.ollamaEndpoint) ?? "http://localhost:11434"
-        ollamaModel = defaults.string(forKey: Keys.ollamaModel) ?? "qwen2.5:7b"
-        grammarCheckerEnabled = defaults.bool(forKey: Keys.grammarCheckerEnabled)
+        gectorHelperEndpoint = defaults.string(forKey: Keys.gectorHelperEndpoint) ?? "http://127.0.0.1:8765/correct"
+        gectorRequestTimeout = defaults.double(forKey: Keys.gectorRequestTimeout)
+        geminiAPIKey = defaults.string(forKey: Keys.geminiAPIKey) ?? ""
+        geminiModel = defaults.string(forKey: Keys.geminiModel) ?? "gemini-3.1-flash-lite"
         isManualShortcutEnabled = defaults.bool(forKey: Keys.isManualShortcutEnabled)
         if
             let data = defaults.data(forKey: Keys.checkSelectionShortcut),
@@ -227,6 +252,21 @@ final class AppSettings: ObservableObject {
             checkSelectionShortcut = shortcut
         } else {
             checkSelectionShortcut = .default
+        }
+    }
+
+    private static func correctionMode(from rawValue: String?) -> CorrectionMode {
+        switch rawValue {
+        case CorrectionMode.embeddedLanguageTool.rawValue:
+            return .embeddedLanguageTool
+        case CorrectionMode.languageToolGECToR.rawValue:
+            return .languageToolGECToR
+        case CorrectionMode.gemini.rawValue:
+            return .gemini
+        case "localSpellChecker":
+            return .embeddedLanguageTool
+        default:
+            return .embeddedLanguageTool
         }
     }
 }

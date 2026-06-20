@@ -1,0 +1,80 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Xcode generated files
+DerivedData/
+build/
+Build/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+Packages/
+
+# App archives and build products
+*.app
+*.dSYM
+*.xcarchive
+*.ipa
+*.pkg
+*.mpkg
+
+# Local settings and secrets
+.env
+.env.*
+*.env
+*.local
+*.secret
+secrets/
+config.local.*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Python helper environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local GECToR checkout, virtualenv, and model files
+.gector/
+*.th
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Generated embedded LanguageTool payload
+Vendor/EmbeddedLanguageTool/LanguageTool/
+Vendor/EmbeddedLanguageTool/JavaRuntime/
+Vendor/EmbeddedLanguageTool/Dictionaries/
+
+# Large downloaded archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# IDE metadata
+.idea/
+.vscode/

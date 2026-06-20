@@ -14,7 +14,6 @@
 		A00100000000000000000005 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000005 /* AppSettings.swift */; };
 		A00100000000000000000006 /* CorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000006 /* CorrectionEngine.swift */; };
 		A00100000000000000000007 /* MacOSSpellCheckerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000007 /* MacOSSpellCheckerEngine.swift */; };
-		A00100000000000000000008 /* OllamaCorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000008 /* OllamaCorrectionEngine.swift */; };
 		A00100000000000000000009 /* AccessibilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000009 /* AccessibilityManager.swift */; };
 		A0010000000000000000000A /* SelectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000A /* SelectionMonitor.swift */; };
 		A0010000000000000000000B /* TextReplacementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000000B /* TextReplacementService.swift */; };
@@ -32,6 +31,16 @@
 		A00100000000000000000016 /* MacOSSpellCheckerEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000016 /* MacOSSpellCheckerEngineTests.swift */; };
 		A00100000000000000000017 /* CorrectionResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000017 /* CorrectionResultTests.swift */; };
 		A00100000000000000000019 /* KeyboardShortcutSettingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001B /* KeyboardShortcutSettingTests.swift */; };
+		A0010000000000000000001A /* LanguageToolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001C /* LanguageToolModels.swift */; };
+		A0010000000000000000001B /* EngineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001D /* EngineManager.swift */; };
+		A0010000000000000000001C /* EmbeddedLanguageToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001E /* EmbeddedLanguageToolService.swift */; };
+		A0010000000000000000001D /* LanguageToolCorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0020000000000000000001F /* LanguageToolCorrectionEngine.swift */; };
+		A0010000000000000000001E /* MemoryPressureObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000020 /* MemoryPressureObserver.swift */; };
+		A0010000000000000000001F /* EngineManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000021 /* EngineManagerTests.swift */; };
+		A00100000000000000000020 /* EmbeddedLanguageToolServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000022 /* EmbeddedLanguageToolServiceTests.swift */; };
+		A00100000000000000000021 /* GeminiCorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000023 /* GeminiCorrectionEngine.swift */; };
+		A00100000000000000000022 /* GECToRCorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000024 /* GECToRCorrectionEngine.swift */; };
+		A00100000000000000000023 /* GECToRHelperProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00200000000000000000025 /* GECToRHelperProcessManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,7 +61,6 @@
 		A00200000000000000000005 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A00200000000000000000006 /* CorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionEngine.swift; sourceTree = "<group>"; };
 		A00200000000000000000007 /* MacOSSpellCheckerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSSpellCheckerEngine.swift; sourceTree = "<group>"; };
-		A00200000000000000000008 /* OllamaCorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaCorrectionEngine.swift; sourceTree = "<group>"; };
 		A00200000000000000000009 /* AccessibilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityManager.swift; sourceTree = "<group>"; };
 		A0020000000000000000000A /* SelectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionMonitor.swift; sourceTree = "<group>"; };
 		A0020000000000000000000B /* TextReplacementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReplacementService.swift; sourceTree = "<group>"; };
@@ -70,6 +78,16 @@
 		A00200000000000000000016 /* MacOSSpellCheckerEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSSpellCheckerEngineTests.swift; sourceTree = "<group>"; };
 		A00200000000000000000017 /* CorrectionResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionResultTests.swift; sourceTree = "<group>"; };
 		A0020000000000000000001B /* KeyboardShortcutSettingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutSettingTests.swift; sourceTree = "<group>"; };
+		A0020000000000000000001C /* LanguageToolModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageToolModels.swift; sourceTree = "<group>"; };
+		A0020000000000000000001D /* EngineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineManager.swift; sourceTree = "<group>"; };
+		A0020000000000000000001E /* EmbeddedLanguageToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddedLanguageToolService.swift; sourceTree = "<group>"; };
+		A0020000000000000000001F /* LanguageToolCorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageToolCorrectionEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000020 /* MemoryPressureObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryPressureObserver.swift; sourceTree = "<group>"; };
+		A00200000000000000000021 /* EngineManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineManagerTests.swift; sourceTree = "<group>"; };
+		A00200000000000000000022 /* EmbeddedLanguageToolServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddedLanguageToolServiceTests.swift; sourceTree = "<group>"; };
+		A00200000000000000000023 /* GeminiCorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiCorrectionEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000024 /* GECToRCorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GECToRCorrectionEngine.swift; sourceTree = "<group>"; };
+		A00200000000000000000025 /* GECToRHelperProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GECToRHelperProcessManager.swift; sourceTree = "<group>"; };
 		A00200000000000000000018 /* SpellingPopupAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpellingPopupAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00200000000000000000019 /* SpellingPopupAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpellingPopupAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -114,10 +132,10 @@
 			sourceTree = "<group>";
 		};
 		A00500000000000000000004 /* Models */ = {isa = PBXGroup; children = (A00200000000000000000003, A00200000000000000000004, A00200000000000000000005); path = Models; sourceTree = "<group>"; };
-		A00500000000000000000005 /* Engines */ = {isa = PBXGroup; children = (A00200000000000000000006, A00200000000000000000007, A00200000000000000000008); path = Engines; sourceTree = "<group>"; };
+		A00500000000000000000005 /* Engines */ = {isa = PBXGroup; children = (A00200000000000000000006, A00200000000000000000007, A00200000000000000000024, A00200000000000000000025, A00200000000000000000023, A0020000000000000000001C, A0020000000000000000001D, A0020000000000000000001E, A0020000000000000000001F); path = Engines; sourceTree = "<group>"; };
 		A00500000000000000000006 /* Accessibility */ = {isa = PBXGroup; children = (A00200000000000000000009, A0020000000000000000000A, A0020000000000000000000B); path = Accessibility; sourceTree = "<group>"; };
 		A00500000000000000000007 /* Popup */ = {isa = PBXGroup; children = (A0020000000000000000000C, A0020000000000000000000D); path = Popup; sourceTree = "<group>"; };
-		A00500000000000000000008 /* Utilities */ = {isa = PBXGroup; children = (A0020000000000000000000E, A0020000000000000000000F, A00200000000000000000010, A0020000000000000000001A); path = Utilities; sourceTree = "<group>"; };
+		A00500000000000000000008 /* Utilities */ = {isa = PBXGroup; children = (A0020000000000000000000E, A0020000000000000000000F, A00200000000000000000010, A0020000000000000000001A, A00200000000000000000020); path = Utilities; sourceTree = "<group>"; };
 		A0050000000000000000000F /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -133,7 +151,7 @@
 		A00500000000000000000011 /* Popup */ = {isa = PBXGroup; children = (A00200000000000000000012); path = Popup; sourceTree = "<group>"; };
 		A00500000000000000000012 /* Settings */ = {isa = PBXGroup; children = (A00200000000000000000013); path = Settings; sourceTree = "<group>"; };
 		A00500000000000000000013 /* Permission */ = {isa = PBXGroup; children = (A00200000000000000000014); path = Permission; sourceTree = "<group>"; };
-		A00500000000000000000018 /* SpellingPopupAssistantTests */ = {isa = PBXGroup; children = (A00200000000000000000016, A00200000000000000000017, A0020000000000000000001B); path = SpellingPopupAssistantTests; sourceTree = "<group>"; };
+		A00500000000000000000018 /* SpellingPopupAssistantTests */ = {isa = PBXGroup; children = (A00200000000000000000016, A00200000000000000000017, A0020000000000000000001B, A00200000000000000000021, A00200000000000000000022); path = SpellingPopupAssistantTests; sourceTree = "<group>"; };
 		A00500000000000000000019 /* Products */ = {isa = PBXGroup; children = (A00200000000000000000018, A00200000000000000000019); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
@@ -141,7 +159,7 @@
 		A00600000000000000000001 /* SpellingPopupAssistant */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A00A00000000000000000001 /* Build configuration list for PBXNativeTarget "SpellingPopupAssistant" */;
-			buildPhases = (A00700000000000000000001 /* Sources */, A00400000000000000000001 /* Frameworks */, A00800000000000000000001 /* Resources */);
+			buildPhases = (A00700000000000000000001 /* Sources */, A00400000000000000000001 /* Frameworks */, A00800000000000000000001 /* Resources */, A00D00000000000000000001 /* Copy Embedded LanguageTool */);
 			buildRules = ();
 			dependencies = ();
 			name = SpellingPopupAssistant;
@@ -192,16 +210,40 @@
 		A00800000000000000000002 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A00D00000000000000000001 /* Copy Embedded LanguageTool */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = ();
+			inputFileListPaths = ();
+			inputPaths = (
+				"$(SRCROOT)/Vendor/EmbeddedLanguageTool",
+			);
+			name = "Copy Embedded LanguageTool";
+			outputFileListPaths = ();
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/LanguageTool",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/JavaRuntime",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dictionaries",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\nSOURCE=\"${SRCROOT}/Vendor/EmbeddedLanguageTool\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor name in LanguageTool JavaRuntime Dictionaries; do\n  if [ -d \"$SOURCE/$name\" ]; then\n    rm -rf \"$DEST/$name\"\n    ditto \"$SOURCE/$name\" \"$DEST/$name\"\n  else\n    echo \"warning: Embedded LanguageTool payload missing: $SOURCE/$name\"\n  fi\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A00700000000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				A00100000000000000000001, A00100000000000000000002, A00100000000000000000003, A00100000000000000000004,
-				A00100000000000000000005, A00100000000000000000006, A00100000000000000000007, A00100000000000000000008,
+				A00100000000000000000005, A00100000000000000000006, A00100000000000000000007,
 				A00100000000000000000009, A0010000000000000000000A, A0010000000000000000000B, A0010000000000000000000C,
 				A0010000000000000000000D, A0010000000000000000000E, A0010000000000000000000F, A00100000000000000000010,
 				A00100000000000000000018,
+				A0010000000000000000001A, A0010000000000000000001B, A0010000000000000000001C, A0010000000000000000001D, A0010000000000000000001E, A00100000000000000000021, A00100000000000000000022, A00100000000000000000023,
 				A00100000000000000000011, A00100000000000000000012, A00100000000000000000013, A00100000000000000000014,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,7 +251,7 @@
 		A00700000000000000000002 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (A00100000000000000000016, A00100000000000000000017, A00100000000000000000019);
+			files = (A00100000000000000000016, A00100000000000000000017, A00100000000000000000019, A0010000000000000000001F, A00100000000000000000020);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */

@@ -10,6 +10,7 @@ final class MenuBarController: NSObject {
     private let onCheckAccessibility: () -> Void
     private var statusItem: NSStatusItem?
     private var settingsCancellable: AnyCancellable?
+    private var isCorrecting = false
 
     init(
         settings: AppSettings,
@@ -27,8 +28,7 @@ final class MenuBarController: NSObject {
 
     func install() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem?.button?.image = NSImage(systemSymbolName: "text.magnifyingglass", accessibilityDescription: "Spelling Popup Assistant")
-        statusItem?.button?.imagePosition = .imageOnly
+        updateStatusItemAppearance()
         rebuildMenu()
 
         settingsCancellable = settings.objectWillChange
@@ -38,9 +38,34 @@ final class MenuBarController: NSObject {
             }
     }
 
+    func setCorrecting(_ isCorrecting: Bool) {
+        self.isCorrecting = isCorrecting
+        updateStatusItemAppearance()
+        rebuildMenu()
+    }
+
+    private func updateStatusItemAppearance() {
+        guard let button = statusItem?.button else { return }
+
+        if isCorrecting {
+            statusItem?.length = NSStatusItem.variableLength
+            button.image = NSImage(systemSymbolName: "hourglass", accessibilityDescription: "Correcting selected text")
+            button.title = " Correcting..."
+            button.imagePosition = .imageLeft
+        } else {
+            statusItem?.length = NSStatusItem.squareLength
+            button.image = NSImage(systemSymbolName: "text.magnifyingglass", accessibilityDescription: "Spelling Popup Assistant")
+            button.title = ""
+            button.imagePosition = .imageOnly
+        }
+    }
+
     private func rebuildMenu() {
         let menu = NSMenu()
         menu.addItem(withTitle: "Spelling Popup Assistant", action: nil, keyEquivalent: "")
+        if isCorrecting {
+            menu.addItem(withTitle: "Correcting selected text...", action: nil, keyEquivalent: "")
+        }
         menu.addItem(.separator())
 
         let enabledItem = NSMenuItem(title: settings.isEnabled ? "Enabled: On" : "Enabled: Off", action: #selector(toggleEnabled), keyEquivalent: "")
@@ -67,6 +92,7 @@ final class MenuBarController: NSObject {
             : "Check Selected Text Now"
         let checkSelectionItem = NSMenuItem(title: checkSelectionTitle, action: #selector(checkSelection), keyEquivalent: "")
         checkSelectionItem.target = self
+        checkSelectionItem.isEnabled = !isCorrecting
         menu.addItem(checkSelectionItem)
 
         let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")

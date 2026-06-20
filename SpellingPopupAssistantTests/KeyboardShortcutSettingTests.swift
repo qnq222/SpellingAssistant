@@ -3,12 +3,20 @@ import XCTest
 @testable import SpellingPopupAssistant
 
 final class KeyboardShortcutSettingTests: XCTestCase {
-    func testManualShortcutFallbackDefaultsOff() {
+    func testShortcutCheckingDefaultsOn() {
         let defaults = UserDefaults(suiteName: "KeyboardShortcutSettingTests.\(UUID().uuidString)")!
 
         let settings = AppSettings(defaults: defaults)
 
-        XCTAssertFalse(settings.isManualShortcutEnabled)
+        XCTAssertTrue(settings.isManualShortcutEnabled)
+    }
+
+    func testAutoHideDefaultsOn() {
+        let defaults = UserDefaults(suiteName: "KeyboardShortcutSettingTests.\(UUID().uuidString)")!
+
+        let settings = AppSettings(defaults: defaults)
+
+        XCTAssertTrue(settings.isAutoHideEnabled)
     }
 
     func testRecordsShortcutWithoutRequiredModifier() {

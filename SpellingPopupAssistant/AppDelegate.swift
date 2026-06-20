@@ -1,10 +1,12 @@
 import AppKit
+import Combine
 import SwiftUI
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let settings = AppSettings.shared
     private let accessibilityManager = AccessibilityManager.shared
+    private let gectorHelperProcessManager = GECToRHelperProcessManager.shared
     private lazy var menuBarController = MenuBarController(
         settings: settings,
         accessibilityManager: accessibilityManager,
@@ -17,14 +19,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var hotKeyController = GlobalHotKeyController { [weak self] in
         self?.checkCurrentSelectionNow()
     }
+    private lazy var memoryPressureObserver = MemoryPressureObserver {
+        Task {
+            await EngineManager.shared.shutdownNow()
+        }
+    }
     private var permissionWindowController: NSWindowController?
     private var settingsWindowController: NSWindowController?
+    private var settingsCancellables: Set<AnyCancellable> = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         menuBarController.install()
         configureSelectionMonitor()
+        configureGECToRHelperProcessManagement()
         hotKeyController.start()
+        memoryPressureObserver.start()
+        gectorHelperProcessManager.start(endpoint: settings.gectorHelperEndpoint)
 
         if accessibilityManager.isTrusted {
             selectionMonitor.start()
@@ -37,12 +48,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         selectionMonitor.stop()
         hotKeyController.stop()
+        memoryPressureObserver.stop()
+        settingsCancellables.removeAll()
+        gectorHelperProcessManager.stop()
+        EmbeddedLanguageToolService.shared.stop()
     }
 
     private func configureSelectionMonitor() {
+        selectionMonitor.onCorrectionStarted = { [weak self] in
+            self?.menuBarController.setCorrecting(true)
+        }
+        selectionMonitor.onCorrectionFinished = { [weak self] in
+            self?.menuBarController.setCorrecting(false)
+        }
         selectionMonitor.onCorrectionResult = { [weak self] result in
-            guard result.hasCorrections else { return }
-            self?.popupController.show(result: result)
+            self?.popupController.show(
+                result: result,
+                transientMessage: result.hasCorrections ? nil : "No corrections found."
+            )
         }
         selectionMonitor.onCorrectionError = { message in
             Logger.correction.error("\(message, privacy: .public)")
@@ -50,6 +73,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         selectionMonitor.onSelectionCleared = { [weak self] in
             self?.popupController.hide()
         }
+    }
+
+    private func configureGECToRHelperProcessManagement() {
+        settings.$gectorHelperEndpoint
+            .removeDuplicates()
+            .dropFirst()
+            .sink { [weak self] endpoint in
+                guard let self else { return }
+                self.gectorHelperProcessManager.stop()
+                self.gectorHelperProcessManager.start(endpoint: endpoint)
+            }
+            .store(in: &settingsCancellables)
     }
 
     private func checkAccessibilityPermission() {
@@ -75,7 +110,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 540, height: 480),
+            contentRect: NSRect(x: 0, y: 0, width: 540, height: 580),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false

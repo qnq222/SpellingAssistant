@@ -10,10 +10,12 @@ struct SettingsView: View {
     @State private var draftMaxSelectedTextLength: Int
     @State private var draftShowPopupForSingleWords: Bool
     @State private var draftShowPopupForSentences: Bool
+    @State private var draftIsAutoHideEnabled: Bool
     @State private var draftAutoHideTimeout: Double
-    @State private var draftGrammarCheckerEnabled: Bool
-    @State private var draftOllamaEndpoint: String
-    @State private var draftOllamaModel: String
+    @State private var draftGECToRHelperEndpoint: String
+    @State private var draftGECToRRequestTimeout: Double
+    @State private var draftGeminiAPIKey: String
+    @State private var draftGeminiModel: String
     @State private var draftIsManualShortcutEnabled: Bool
     @State private var draftCheckSelectionShortcut: KeyboardShortcutSetting
 
@@ -24,10 +26,12 @@ struct SettingsView: View {
         _draftMaxSelectedTextLength = State(initialValue: settings.maxSelectedTextLength)
         _draftShowPopupForSingleWords = State(initialValue: settings.showPopupForSingleWords)
         _draftShowPopupForSentences = State(initialValue: settings.showPopupForSentences)
+        _draftIsAutoHideEnabled = State(initialValue: settings.isAutoHideEnabled)
         _draftAutoHideTimeout = State(initialValue: settings.autoHideTimeout)
-        _draftGrammarCheckerEnabled = State(initialValue: settings.grammarCheckerEnabled)
-        _draftOllamaEndpoint = State(initialValue: settings.ollamaEndpoint)
-        _draftOllamaModel = State(initialValue: settings.ollamaModel)
+        _draftGECToRHelperEndpoint = State(initialValue: settings.gectorHelperEndpoint)
+        _draftGECToRRequestTimeout = State(initialValue: settings.gectorRequestTimeout)
+        _draftGeminiAPIKey = State(initialValue: settings.geminiAPIKey)
+        _draftGeminiModel = State(initialValue: settings.geminiModel)
         _draftIsManualShortcutEnabled = State(initialValue: settings.isManualShortcutEnabled)
         _draftCheckSelectionShortcut = State(initialValue: settings.checkSelectionShortcut)
     }
@@ -46,11 +50,13 @@ struct SettingsView: View {
                 Stepper("Maximum selected text length: \(draftMaxSelectedTextLength)", value: $draftMaxSelectedTextLength, in: 50...5000, step: 50)
                 Toggle("Show popup for single words", isOn: $draftShowPopupForSingleWords)
                 Toggle("Show popup for sentences", isOn: $draftShowPopupForSentences)
+                Toggle("Auto-hide popup", isOn: $draftIsAutoHideEnabled)
                 Stepper("Auto-hide timeout: \(Int(draftAutoHideTimeout)) seconds", value: $draftAutoHideTimeout, in: 2...30, step: 1)
+                    .disabled(!draftIsAutoHideEnabled)
 
-                Toggle("Enable manual shortcut fallback", isOn: $draftIsManualShortcutEnabled)
+                Toggle("Enable shortcut checking", isOn: $draftIsManualShortcutEnabled)
 
-                LabeledContent("Manual check shortcut") {
+                LabeledContent("Check selected text shortcut") {
                     HStack(spacing: 10) {
                         Text(isRecordingShortcut ? "Press any shortcut..." : draftCheckSelectionShortcut.title)
                             .foregroundStyle(draftIsManualShortcutEnabled ? (isRecordingShortcut ? .blue : .primary) : .secondary)
@@ -68,11 +74,18 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Local AI with Ollama") {
-                Toggle("Check grammar with local AI", isOn: $draftGrammarCheckerEnabled)
-                TextField("Endpoint", text: $draftOllamaEndpoint)
-                TextField("Model", text: $draftOllamaModel)
-                Text("Grammar checking requires Ollama. When AI or grammar mode is enabled, selected text is sent only to the local Ollama server running on this Mac.")
+            Section("Local GECToR Helper") {
+                TextField("Endpoint", text: $draftGECToRHelperEndpoint)
+                Stepper("Request timeout: \(Int(draftGECToRRequestTimeout)) seconds", value: $draftGECToRRequestTimeout, in: 1...10, step: 1)
+                Text("The app starts the local helper in the background on launch and stops it on quit. LanguageTool runs first, then GECToR improves sentence-level grammar when LanguageTool + GECToR is selected.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Cloud AI with Gemini") {
+                SecureField("API Key", text: $draftGeminiAPIKey)
+                TextField("Model", text: $draftGeminiModel)
+                Text("Gemini sends selected text to Google's API only when Cloud AI via Gemini is selected. The free tier has limits and may use submitted content to improve Google products.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -90,9 +103,15 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding(20)
-        .frame(width: 540, height: 480)
+        .frame(width: 540, height: 580)
         .onDisappear {
             stopRecordingShortcut()
+        }
+        .onReceive(settings.$correctionMode.removeDuplicates()) { correctionMode in
+            draftCorrectionMode = correctionMode
+        }
+        .onChange(of: draftCorrectionMode) { correctionMode in
+            settings.correctionMode = correctionMode
         }
         .onChange(of: draftIsManualShortcutEnabled) { isEnabled in
             if !isEnabled {
@@ -137,10 +156,12 @@ struct SettingsView: View {
         draftMaxSelectedTextLength = settings.maxSelectedTextLength
         draftShowPopupForSingleWords = settings.showPopupForSingleWords
         draftShowPopupForSentences = settings.showPopupForSentences
+        draftIsAutoHideEnabled = settings.isAutoHideEnabled
         draftAutoHideTimeout = settings.autoHideTimeout
-        draftGrammarCheckerEnabled = settings.grammarCheckerEnabled
-        draftOllamaEndpoint = settings.ollamaEndpoint
-        draftOllamaModel = settings.ollamaModel
+        draftGECToRHelperEndpoint = settings.gectorHelperEndpoint
+        draftGECToRRequestTimeout = settings.gectorRequestTimeout
+        draftGeminiAPIKey = settings.geminiAPIKey
+        draftGeminiModel = settings.geminiModel
         draftIsManualShortcutEnabled = settings.isManualShortcutEnabled
         draftCheckSelectionShortcut = settings.checkSelectionShortcut
     }
@@ -152,10 +173,12 @@ struct SettingsView: View {
         settings.maxSelectedTextLength = draftMaxSelectedTextLength
         settings.showPopupForSingleWords = draftShowPopupForSingleWords
         settings.showPopupForSentences = draftShowPopupForSentences
+        settings.isAutoHideEnabled = draftIsAutoHideEnabled
         settings.autoHideTimeout = draftAutoHideTimeout
-        settings.grammarCheckerEnabled = draftGrammarCheckerEnabled
-        settings.ollamaEndpoint = draftOllamaEndpoint
-        settings.ollamaModel = draftOllamaModel
+        settings.gectorHelperEndpoint = draftGECToRHelperEndpoint
+        settings.gectorRequestTimeout = draftGECToRRequestTimeout
+        settings.geminiAPIKey = draftGeminiAPIKey
+        settings.geminiModel = draftGeminiModel
         settings.isManualShortcutEnabled = draftIsManualShortcutEnabled
         settings.checkSelectionShortcut = draftCheckSelectionShortcut
     }

@@ -77,48 +77,28 @@ final class AccessibilityManager {
         return trimmed.isEmpty ? nil : selectedText
     }
 
-    func selectedTextIncludingClipboardFallback() async -> String? {
-        if let selectedText = selectedText() {
-            return selectedText
-        }
-
-        guard canUseClipboardSelectionFallbackForFrontmostApp else {
-            return nil
-        }
-
-        return await selectedTextFromClipboardFallback()
-    }
-
-    var canUseClipboardSelectionFallbackForFrontmostApp: Bool {
-        guard let app = NSWorkspace.shared.frontmostApplication else {
-            return false
-        }
-
-        let appName = app.localizedName?.lowercased() ?? ""
-        let bundleIdentifier = app.bundleIdentifier?.lowercased() ?? ""
-        return appName.contains("codex") || bundleIdentifier.contains("codex")
-    }
-
     @MainActor
     func selectedTextFromClipboardFallback() async -> String? {
         let pasteboard = NSPasteboard.general
         let previousChangeCount = pasteboard.changeCount
-        let previousString = pasteboard.string(forType: .string)
+        let previousItems = pasteboard.pasteboardItems?.map { item in
+            item.types.reduce(into: [NSPasteboard.PasteboardType: Data]()) { result, type in
+                result[type] = item.data(forType: type)
+            }
+        } ?? []
 
         guard sendCopyShortcut() else {
             return nil
         }
 
-        try? await Task.sleep(for: .milliseconds(120))
-
-        let copiedString = pasteboard.string(forType: .string)
+        let copiedString = await waitForCopiedString(
+            pasteboard: pasteboard,
+            previousChangeCount: previousChangeCount
+        )
         let copiedSelectionChangedPasteboard = pasteboard.changeCount != previousChangeCount
 
         if copiedSelectionChangedPasteboard {
-            pasteboard.clearContents()
-            if let previousString {
-                pasteboard.setString(previousString, forType: .string)
-            }
+            restorePasteboardItems(previousItems)
         }
 
         guard copiedSelectionChangedPasteboard, let copiedString else {
@@ -131,6 +111,36 @@ final class AccessibilityManager {
         }
 
         return copiedString
+    }
+
+    @MainActor
+    private func waitForCopiedString(pasteboard: NSPasteboard, previousChangeCount: Int) async -> String? {
+        for _ in 0..<10 {
+            try? await Task.sleep(for: .milliseconds(20))
+
+            if pasteboard.changeCount != previousChangeCount {
+                return pasteboard.string(forType: .string)
+            }
+        }
+
+        return nil
+    }
+
+    private func restorePasteboardItems(_ savedItems: [[NSPasteboard.PasteboardType: Data]]) {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+
+        let restoredItems = savedItems.map { savedItem in
+            let item = NSPasteboardItem()
+            for (type, data) in savedItem {
+                item.setData(data, forType: type)
+            }
+            return item
+        }
+
+        if !restoredItems.isEmpty {
+            pasteboard.writeObjects(restoredItems)
+        }
     }
 
     private func sendCopyShortcut() -> Bool {

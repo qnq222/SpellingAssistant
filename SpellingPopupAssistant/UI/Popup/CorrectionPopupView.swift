@@ -12,13 +12,20 @@ struct CorrectionPopupView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Spelling Correction")
+                Text("Writing Check")
                     .font(.headline)
                 Spacer()
-                Text("\(settings.grammarCheckerEnabled ? "Issues" : "Misspelled words"): \(result.misspelledWordCount)")
+                Text("Total Issues: \(result.totalIssueCount)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            HStack(spacing: 12) {
+                Text("Grammar Issues: \(result.grammarIssueCount)")
+                Text("Spelling Issues: \(result.spellingIssueCount)")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
 
             Text(result.correctedText)
                 .font(.body)
@@ -26,18 +33,29 @@ struct CorrectionPopupView: View {
                 .lineLimit(6)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            if !result.corrections.isEmpty {
+            if !result.issues.isEmpty || !result.corrections.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    ForEach(result.corrections.prefix(5)) { correction in
-                        HStack(spacing: 6) {
-                            Text(correction.original)
-                                .strikethrough()
+                    Text("Issue Details")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    ForEach(displayIssues.prefix(6)) { issue in
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 6) {
+                                Text(issue.original)
+                                    .strikethrough(issue.replacement != nil)
+                                    .foregroundStyle(.secondary)
+                                if let replacement = issue.replacement {
+                                    Image(systemName: "arrow.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Text(replacement)
+                                        .fontWeight(.medium)
+                                }
+                            }
+                            Text(issue.message)
                                 .foregroundStyle(.secondary)
-                            Image(systemName: "arrow.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(correction.corrected)
-                                .fontWeight(.medium)
+                                .lineLimit(2)
                         }
                         .font(.caption)
                     }
@@ -67,5 +85,20 @@ struct CorrectionPopupView: View {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(.quaternary, lineWidth: 1)
         )
+    }
+
+    private var displayIssues: [CorrectionIssue] {
+        if !result.issues.isEmpty {
+            return result.issues
+        }
+
+        return result.corrections.map {
+            CorrectionIssue(
+                kind: .spelling,
+                original: $0.original,
+                replacement: $0.corrected,
+                message: "Spelling"
+            )
+        }
     }
 }

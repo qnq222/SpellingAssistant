@@ -1,108 +1,109 @@
-# Codex Implementation Instructions — macOS PopClip-Style Spelling Correction App
+# Spelling Popup Assistant Implementation
 
-## 1. Role
+This document summarizes the current Swift implementation of Spelling Popup Assistant.
 
-You are Codex acting as a senior macOS engineer.
+## App Role
 
-Build a native macOS Xcode project named:
+Spelling Popup Assistant is a native macOS menu bar app that checks selected text on demand. It uses SwiftUI for views and AppKit for menu bar, Accessibility, global shortcut, and floating popup behavior.
 
-```text
-SpellingPopupAssistant
-```
+The app currently supports:
 
-The app should behave like a focused PopClip-style correction tool. When the user highlights a word, sentence, or paragraph, the app should show a floating popup with corrected spelling and the number of misspelled words.
+- Offline embedded LanguageTool correction.
+- Optional local `LanguageTool + GECToR` grammar improvement.
+- Optional cloud correction through Gemini.
+- Fallback correction through `NSSpellChecker`.
+- Popup actions for replace, copy, and ignore.
 
-The app must be implemented in Swift using SwiftUI and AppKit where required.
+## Startup Flow
 
----
+`AppDelegate` performs app setup:
 
-## 2. Development Constraints
+1. Sets the app activation policy to `.accessory`.
+2. Installs `MenuBarController`.
+3. Configures `SelectionMonitor` callbacks.
+4. Starts global hotkey monitoring.
+5. Starts memory pressure observation.
+6. Starts the local GECToR helper script.
+7. Checks Accessibility permission.
+8. Shows the permission window and opens the system prompt when permission is missing.
 
-Use:
+On termination, the app stops the selection monitor, hotkey controller, memory pressure observer, GECToR helper process, and embedded LanguageTool service.
 
-- Xcode project
-- Swift
-- SwiftUI for views
-- AppKit for menu bar, floating panel, and Accessibility integration
-- `NSSpellChecker` for local spell checking
-- Optional local Ollama integration for AI correction
-- No Firebase
-- No external paid SDKs
-- No cloud service required for Version 1
+## Menu Bar
 
-The first working version must not depend on any paid API.
+`MenuBarController` owns the status item and menu.
 
----
+Menu features:
 
-## 3. Required App Behavior
+- Shows the app name.
+- Shows a temporary correcting state while a request is active.
+- Toggles correction popups on or off.
+- Selects correction mode.
+- Runs `Check Selected Text Now`.
+- Opens Settings.
+- Checks Accessibility permission.
+- Quits the app.
 
-### 3.1 Startup
+The menu bar icon switches to an hourglass and title while correction is running.
 
-When launched:
+## Settings
 
-1. App starts as a menu bar utility.
-2. No dock icon is required.
-3. App checks whether Accessibility permission is granted.
-4. If permission is missing:
-   - Show a permission window.
-   - Provide a button to open macOS Accessibility settings.
-5. If permission is granted:
-   - Start selection monitoring.
+`AppSettings` persists user preferences in `UserDefaults`.
 
-### 3.2 Selection Monitoring
+Current settings:
 
-The app should monitor selected text system-wide.
+- `isEnabled`
+- `correctionMode`
+- `maxSelectedTextLength`
+- `showPopupForSingleWords`
+- `showPopupForSentences`
+- `isAutoHideEnabled`
+- `autoHideTimeout`
+- `gectorHelperEndpoint`
+- `gectorRequestTimeout`
+- `geminiAPIKey`
+- `geminiModel`
+- `isManualShortcutEnabled`
+- `checkSelectionShortcut`
 
-Implement a `SelectionMonitor` class that:
+`SettingsView` provides controls for all of those settings, including a custom shortcut recorder.
 
-- Polls the current selected text every 400 ms.
-- Uses Accessibility APIs to get focused UI element.
-- Reads `kAXSelectedTextAttribute`.
-- Ignores empty text.
-- Ignores text longer than the configured maximum length.
-- Debounces repeated same selection.
-- Sends new selected text to the correction engine.
+## Selection Flow
 
-Pseudo-logic:
+`SelectionMonitor` checks selected text only when the user invokes the global shortcut or menu item.
 
-```swift
-if appIsEnabled && accessibilityPermissionGranted {
-    let selectedText = accessibilityManager.getSelectedText()
-    if selectedText != lastSelectedText && !selectedText.isEmpty {
-        correct(selectedText)
-        showPopup(result)
-    }
-}
-```
+Processing rules:
 
-### 3.3 Floating Popup
+- App must be enabled.
+- Accessibility permission must be trusted.
+- Direct Accessibility selected text is preferred.
+- Clipboard fallback is used when direct selected text is unavailable.
+- Empty selections are ignored.
+- Selections longer than the configured maximum are ignored.
+- Single-word and sentence/paragraph settings decide whether a popup is allowed.
+- Duplicate processing of the same text and mode is suppressed within 500 ms.
 
-Implement `CorrectionPopupController`.
+After validation, `SelectionMonitor` runs the active correction engine asynchronously and reports results to the popup controller.
 
-Requirements:
+## Correction Result Model
 
-- Use `NSPanel`.
-- Panel should float above other windows.
-- Panel should not steal focus if possible.
-- Panel should appear near mouse pointer as a reliable fallback.
-- Panel should auto-hide after a configurable timeout, default 8 seconds.
-- Panel should hide when user clicks Ignore.
-- Panel should resize based on text content.
+`CorrectionResult` contains:
 
-Popup content:
+- `originalText`
+- `correctedText`
+- `spellingIssueCount`
+- `grammarIssueCount`
+- `misspelledWordCount`
+- `corrections`
+- `issues`
 
-- Header: `Spelling Correction`
-- Misspelled word count
-- Corrected text
-- Optional list of corrected words
-- Buttons:
-  - `Replace`
-  - `Copy`
-  - `Ignore`
+`totalIssueCount` is computed from spelling and grammar counts. `hasCorrections` returns true when the text changed or any issue/correction is present.
 
-### 3.4 Correction Logic
+`CorrectionIssue` distinguishes spelling and grammar details for the popup.
 
-Create a protocol:
+## Correction Engines
+
+All correction engines conform to:
 
 ```swift
 protocol CorrectionEngine {
@@ -110,431 +111,116 @@ protocol CorrectionEngine {
 }
 ```
 
-Create models:
+### Embedded LanguageTool
 
-```swift
-struct CorrectionResult: Equatable {
-    let originalText: String
-    let correctedText: String
-    let misspelledWordCount: Int
-    let corrections: [WordCorrection]
-}
+`LanguageToolCorrectionEngine` delegates to `EngineManager`, which owns the lazy service lifecycle.
 
-struct WordCorrection: Equatable, Identifiable {
-    let id = UUID()
-    let original: String
-    let corrected: String
-}
+`EmbeddedLanguageToolService`:
+
+- Locates bundled Java and LanguageTool resources.
+- Starts `languagetool-server.jar` on a random localhost port.
+- Waits for `/v2/languages`.
+- Checks text with `/v2/check`.
+- Disables style, colloquialism, and redundancy categories.
+- Converts LanguageTool matches into corrected text and issue details.
+- Tracks process resource usage.
+
+### Engine Manager
+
+`EngineManager`:
+
+- Starts the embedded service on first use.
+- Reuses it while active.
+- Schedules shutdown after 60 seconds of inactivity.
+- Exposes immediate shutdown for memory pressure handling.
+
+### LanguageTool + GECToR
+
+`LanguageToolGECToRCorrectionEngine`:
+
+- Runs LanguageTool first.
+- Supplements spelling with `MacOSSpellCheckerEngine` when useful.
+- Applies high-confidence local grammar rules.
+- Sends sentence-like corrected text to `GECToRHTTPClient`.
+- Merges helper issues and corrections into the result.
+- Rejects helper suggestions that remove negation markers.
+- Returns the local result when the helper fails.
+
+`GECToRHelperProcessManager` starts `scripts/gector_helper/run_roberta_helper.sh` on app launch, passes host and port from the configured endpoint, logs output, and stops the helper on quit.
+
+### Gemini
+
+`GeminiCorrectionEngine`:
+
+- Requires a configured API key.
+- Calls the Gemini `generateContent` endpoint with JSON response mode.
+- Requests spelling, grammar, tense, agreement, article, punctuation, word-form, and clarity fixes.
+- Parses the returned JSON into `CorrectionResult`.
+
+If Gemini fails, `SelectionMonitor` falls back to `MacOSSpellCheckerEngine`.
+
+### macOS Spell Checker
+
+`MacOSSpellCheckerEngine` uses `NSSpellChecker` as a local fallback. It is used when the active engine throws.
+
+## Popup
+
+`CorrectionPopupController` creates a floating non-activating `NSPanel` backed by `CorrectionPopupView`.
+
+Popup behavior:
+
+- Floats above normal windows.
+- Joins all spaces and full-screen auxiliary contexts.
+- Positions near the mouse pointer.
+- Fits content between compact minimum and maximum sizes.
+- Auto-hides based on settings.
+- Hides immediately when ignored.
+- Hides after successful replacement.
+- Copies corrected text and briefly auto-hides when copy is pressed.
+
+## Text Replacement
+
+`TextReplacementService` replaces selected text by:
+
+1. Verifying Accessibility permission.
+2. Taking a clipboard snapshot.
+3. Copying corrected text.
+4. Sending Command-V through `CGEvent`.
+5. Waiting briefly.
+6. Restoring the previous clipboard contents.
+
+If paste fails, the popup controller leaves the corrected text copied for the user.
+
+## Permissions
+
+`AccessibilityManager` handles:
+
+- Trust checks.
+- Permission requests.
+- Opening Accessibility settings.
+- Direct selected text extraction.
+- Clipboard fallback extraction.
+
+`AccessibilityPermissionView` gives the user a visible recovery path when permission is missing.
+
+## Resource Handling
+
+`MemoryPressureObserver` stops the embedded LanguageTool engine immediately when macOS reports memory pressure.
+
+The default LanguageTool engine also shuts itself down after idle timeout, so the Java process is not permanently resident.
+
+## Tests
+
+The test suite currently covers:
+
+- Correction result behavior.
+- macOS spell checker behavior.
+- Embedded LanguageTool response parsing/service behavior.
+- Engine manager lifecycle.
+- Keyboard shortcut setting behavior.
+
+Run tests with:
+
+```bash
+xcodebuild test -scheme SpellingPopupAssistant -destination 'platform=macOS'
 ```
-
-### 3.5 Local macOS Spell Checker Engine
-
-Implement:
-
-```swift
-final class MacOSSpellCheckerEngine: CorrectionEngine
-```
-
-Use:
-
-```swift
-NSSpellChecker.shared
-```
-
-Algorithm:
-
-1. Tokenize text into words while preserving punctuation and spacing.
-2. For each word:
-   - Check spelling using `checkSpelling(of:startingAt:)`.
-   - If misspelled:
-     - Get suggestions using `guesses(forWordRange:in:language:inSpellDocumentWithTag:)`.
-     - Use the first suggestion as correction.
-3. Reconstruct corrected text while preserving punctuation.
-4. Count misspelled words.
-5. Return `CorrectionResult`.
-
-Important:
-
-- Do not modify words that have no suggestions.
-- Preserve capitalization:
-  - `recieved` → `received`
-  - `Recieved` → `Received`
-  - `RECIEVED` → `RECEIVED`
-- Ignore:
-  - URLs
-  - Email addresses
-  - File paths
-  - Code-like tokens
-  - Numbers
-  - Acronyms
-  - Words shorter than 2 characters
-
-### 3.6 Optional Ollama AI Engine
-
-Implement:
-
-```swift
-final class OllamaCorrectionEngine: CorrectionEngine
-```
-
-Use local Ollama endpoint:
-
-```text
-http://localhost:11434/api/generate
-```
-
-Default model:
-
-```text
-qwen2.5:7b
-```
-
-Request prompt:
-
-```text
-Correct only spelling mistakes in the following text.
-Do not rewrite style.
-Do not change meaning.
-Do not improve grammar unless required for spelling.
-Return valid JSON only with this schema:
-{
-  "correctedText": "string",
-  "misspelledWordCount": number,
-  "corrections": [
-    {
-      "original": "string",
-      "corrected": "string"
-    }
-  ]
-}
-
-Text:
-"""
-{{selected_text}}
-"""
-```
-
-The app must parse the JSON safely.
-
-If Ollama is not running:
-
-- Show an error in the popup or settings.
-- Fall back to `MacOSSpellCheckerEngine`.
-
-Version 1 can include the class but does not need to make it the default.
-
----
-
-## 4. Replace Selected Text
-
-Implement `TextReplacementService`.
-
-Preferred approach:
-
-1. Save corrected text to clipboard.
-2. Simulate Command + V using `CGEvent`.
-3. Restore previous clipboard content if possible.
-
-Reason:
-
-- Direct Accessibility replacement is inconsistent across apps.
-- Clipboard paste is more reliable.
-
-Requirements:
-
-- Before replacing, store current clipboard contents.
-- Put corrected text into clipboard.
-- Simulate paste.
-- After a small delay, restore previous clipboard contents if possible.
-- If paste fails, leave corrected text in clipboard and show a small message.
-
-Accessibility permission is required for simulated keyboard events.
-
----
-
-## 5. Permissions
-
-Create `AccessibilityManager`.
-
-Responsibilities:
-
-- Check permission:
-
-```swift
-AXIsProcessTrusted()
-```
-
-- Request permission:
-
-```swift
-AXIsProcessTrustedWithOptions(...)
-```
-
-- Open System Settings Accessibility page.
-
-Permission window text:
-
-```text
-Spelling Popup Assistant requires Accessibility permission to read selected text and replace it when requested.
-
-Open:
-System Settings > Privacy & Security > Accessibility
-Then enable Spelling Popup Assistant.
-```
-
----
-
-## 6. Settings
-
-Create a settings window.
-
-Settings:
-
-| Setting | Default |
-|---|---|
-| App enabled | true |
-| Correction engine | Local macOS Spell Checker |
-| Max selected text length | 1000 characters |
-| Show popup for single words | true |
-| Show popup for sentences | true |
-| Auto-hide timeout | 8 seconds |
-| Ollama endpoint | http://localhost:11434 |
-| Ollama model | qwen2.5:7b |
-
-Use `UserDefaults` for persistence.
-
----
-
-## 7. Menu Bar
-
-Use a menu bar item with a simple icon.
-
-Menu:
-
-```text
-Spelling Popup Assistant
-------------------------
-Enabled: On/Off
-Correction Mode >
-    Local macOS Spell Checker
-    Local AI via Ollama
-Settings...
-Check Accessibility Permission
-Quit
-```
-
----
-
-## 8. UI Design Requirements
-
-The popup should look professional and minimal.
-
-Visual style:
-
-- Rounded corners
-- Subtle shadow
-- Compact layout
-- macOS-native typography
-- Light and dark mode support
-- No heavy animations
-- No large windows
-
-Popup layout:
-
-```text
-┌────────────────────────────────────┐
-│ Spelling Correction                 │
-│ Misspelled words: 3                 │
-│                                    │
-│ I received the message from the     │
-│ administrator.                     │
-│                                    │
-│ recieved → received                │
-│ mesage → message                   │
-│ adminstrator → administrator       │
-│                                    │
-│ [Replace] [Copy] [Ignore]          │
-└────────────────────────────────────┘
-```
-
----
-
-## 9. File Structure to Generate
-
-Generate the project using this structure:
-
-```text
-SpellingPopupAssistant/
-│
-├── SpellingPopupAssistant.xcodeproj
-│
-├── SpellingPopupAssistant/
-│   ├── SpellingPopupAssistantApp.swift
-│   ├── AppDelegate.swift
-│   │
-│   ├── Core/
-│   │   ├── Models/
-│   │   │   ├── CorrectionResult.swift
-│   │   │   ├── WordCorrection.swift
-│   │   │   └── AppSettings.swift
-│   │   │
-│   │   ├── Engines/
-│   │   │   ├── CorrectionEngine.swift
-│   │   │   ├── MacOSSpellCheckerEngine.swift
-│   │   │   └── OllamaCorrectionEngine.swift
-│   │   │
-│   │   ├── Accessibility/
-│   │   │   ├── AccessibilityManager.swift
-│   │   │   ├── SelectionMonitor.swift
-│   │   │   └── TextReplacementService.swift
-│   │   │
-│   │   ├── Popup/
-│   │   │   ├── CorrectionPopupController.swift
-│   │   │   └── PopupPositioningService.swift
-│   │   │
-│   │   └── Utilities/
-│   │       ├── ClipboardService.swift
-│   │       ├── Debouncer.swift
-│   │       └── Logger.swift
-│   │
-│   ├── UI/
-│   │   ├── Popup/
-│   │   │   └── CorrectionPopupView.swift
-│   │   │
-│   │   ├── Settings/
-│   │   │   └── SettingsView.swift
-│   │   │
-│   │   └── Permission/
-│   │       └── AccessibilityPermissionView.swift
-│   │
-│   └── Assets.xcassets
-│
-└── SpellingPopupAssistantTests/
-    ├── MacOSSpellCheckerEngineTests.swift
-    └── CorrectionResultTests.swift
-```
-
----
-
-## 10. Testing Requirements
-
-Create unit tests for:
-
-- Single misspelled word correction
-- Sentence correction
-- No spelling mistakes
-- Capitalization preservation
-- Ignoring URLs
-- Ignoring emails
-- Ignoring numbers
-- Counting misspelled words correctly
-
-Example tests:
-
-```text
-recieved -> received
-mesage -> message
-adminstrator -> administrator
-I recieved the mesage. -> I received the message.
-```
-
----
-
-## 11. Edge Cases
-
-Handle these cases safely:
-
-- No selected text
-- Unsupported app
-- Accessibility permission revoked
-- Very long selected text
-- Text with emojis
-- Text with URLs
-- Text with email addresses
-- Text containing code
-- Ollama unavailable
-- Clipboard unavailable
-- User selects the same text repeatedly
-
----
-
-## 12. Build Milestones
-
-### Milestone 1 — Basic App Shell
-
-- Create macOS Xcode project
-- Add menu bar item
-- Hide dock icon
-- Add settings window
-- Add permission window
-
-### Milestone 2 — Accessibility Selection Reader
-
-- Add Accessibility permission check
-- Read selected text from focused element
-- Poll selection changes
-- Log selected text in debug mode
-
-### Milestone 3 — Local Spell Checker
-
-- Implement `MacOSSpellCheckerEngine`
-- Return corrected text and misspelled count
-- Add unit tests
-
-### Milestone 4 — Floating Popup
-
-- Implement `NSPanel`
-- Add SwiftUI popup view
-- Show correction result near cursor
-- Add Copy and Ignore actions
-
-### Milestone 5 — Replace Function
-
-- Implement clipboard paste replacement
-- Restore clipboard after paste
-- Add failure handling
-
-### Milestone 6 — Ollama Integration
-
-- Add local AI engine
-- Add model and endpoint settings
-- Add fallback to local spell checker
-
-### Milestone 7 — Polish
-
-- Improve popup styling
-- Add dark mode support
-- Add app-specific error handling
-- Final testing in Safari, Chrome, Notes, Mail, Outlook, Teams, and VS Code
-
----
-
-## 13. Important Implementation Notes
-
-- Prioritize reliability over complex features.
-- Do not build live typing correction in Version 1.
-- Do not send text to any external cloud API.
-- Default to local macOS spell checking.
-- Keep AI local and optional.
-- Use AppKit where SwiftUI cannot handle system-level behavior.
-- Keep the architecture modular and testable.
-- Write clean Swift code with clear comments.
-- Avoid overengineering the first version.
-
----
-
-## 14. Final Output Expected from Codex
-
-Codex should produce:
-
-1. A complete Xcode macOS project.
-2. Swift source files following the requested structure.
-3. Working menu bar app.
-4. Accessibility permission flow.
-5. System-wide selected text detection where supported.
-6. PopClip-style floating correction popup.
-7. Local spelling correction using `NSSpellChecker`.
-8. Misspelled word count.
-9. Copy and Replace buttons.
-10. Unit tests for the correction engine.
-11. README with setup and usage instructions.

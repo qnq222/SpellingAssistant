@@ -93,6 +93,8 @@ final class CorrectionPopupController {
 
     private func scheduleAutoHide(short: Bool = false) {
         hideTask?.cancel()
+        guard settings.isAutoHideEnabled else { return }
+
         let seconds = short ? 1.2 : settings.autoHideTimeout
         hideTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(seconds))
